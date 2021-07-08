@@ -1,0 +1,8 @@
+pandas
+numpy
+flask
+threading
+datetime
+json
+pymysql
+smtplib

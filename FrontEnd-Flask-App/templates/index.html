@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v3.min.js"></script>
+
+<head>
+        <meta charset="utf-8">
+        <title>OxyTracker</title>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="refresh" content="10">
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Raleway:wght@900&display=swap" rel="stylesheet">
+        
+        <!-- CSS Stylesheets -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/methods.css">
+        <!-- Bootstrap Scripts -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <!-- D3.js and Chart.js -->
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>OxyTracker</title>
+
+</head>
+
+<div>
+        <!---------------------------------NAVBAR-------------------------------->
+        <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-danger navbar-default">
+                <a class="navbar-brand" href="">OxyTracker</a>
+                
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02">
+                        <span class="navbar-toggler-icon"></span>
+                </button>
+                        
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                        
+                        <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">
+                                <a class="nav-link" href="about.html">About</a>
+                                </li>
+                        </ul>           
+                </div>
+        </nav>
+        <div class="body-main">
+                <!----------------------------------------------------------------------->
+                <div class="reading col-12">
+                        <p class="reading-heading">LAST READING TAKEN</p>
+                        <p class="reading-text" id="reading-date">-</p>
+                        <p class="reading-text"><span class="red-1">SpO2  </span><span id="reading-SpO2">-</span><span class="red-1">                bpm </span><span  id="reading-bpm">-</span></p>
+                </div> 
+                <!----------------------------------------------------------------------->       
+                <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div id="wrapper">
+                                        <canvas id="canvas1" class="ch1"
+                                                style="width: 50%; height: 30%; background: #444444; border: 1px solid #444444; margin-top: 10px;">
+                                        </canvas>
+                                        <p>A plot of the BPM readings against time.</p>
+                                        <script>
+                                                var c = document.getElementById("canvas1");
+                                                var ctx = c.getContext("2d");
+                                                ctx.font = "30px Arial";
+                                                ctx.fillText("Loading...", 10, 50);
+                                        </script>
+                                </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div id="wrapper">
+                                        <canvas id="canvas2" class="ch1"
+                                                style="width: 50%; height: 30%; background: #444444; border: 1px solid #444444; margin-top: 10px;">
+                                        </canvas>
+                                        <p>A plot of the SpO2 readings against time.</p>
+                                        <script>
+                                                var c = document.getElementById("canvas2");
+                                                var ctx = c.getContext("2d");
+                                                ctx.font = "30px Arial";
+                                                ctx.fillText("Loading...", 10, 50);
+                                        </script>
+                                </div>
+
+
+                        </div>
+
+        </div>
+        <script>
+                var datas = JSON.parse('{{ datas | tojson | safe}}');
+                var _SpO2 = datas.data[datas.data.length-1].SpO2;
+                var _Timestamp = datas.data[datas.data.length-1].Timestamp;
+                var _bpm = datas.data[datas.data.length-1].bpm;
+
+                window.onload = function what(){
+                        document.getElementById("reading-SpO2").innerHTML=_SpO2;
+                        document.getElementById("reading-bpm").innerHTML=_bpm;
+                        document.getElementById("reading-date").innerHTML=_Timestamp;
+                        };
+                
+
+
+                var xtimes = datas.data.map(function (elem) {
+                        return elem.Timestamp;
+                });
+
+                var yspo2 = datas.data.map(function (elem) {
+                        return elem.SpO2;
+                });
+                var ybpm = datas.data.map(function (elem) {
+                        return elem.bpm;
+                });
+                Chart.defaults.color='#ffff';
+                let options1 = {
+                        type: 'line',
+                        data: {
+                                labels: xtimes,
+                                datasets: [{
+                                        label: "time vs Spo2",
+                                        data: yspo2,
+                                        fill: false,
+                                        pointRadius: 0,
+                                        pointHoverRadius: 0,
+                                        borderColor: '#E98580'
+                                }]
+                        },
+                        options: { 
+                                legend: {
+                                        labels: {
+                                                color: "white",
+                                                fontSize: 18
+                                        }
+                                },
+                                scales: {
+                                        x: [{
+                                                display: true,
+                                                title: {
+                                                        display: true,
+                                                        text: 'Time',
+                                                        font: {
+                                                                family: 'Raleway',
+                                                                size: 20,
+                                                                weight: 'bold',
+                                                                lineHeight: 1.2,
+                                                        },
+                                                        padding: { top: 20, left: 0, right: 0, bottom: 0 }
+                                                }
+                                        }],
+                                        y: [{
+                                                display: true,
+                                                title: {
+                                                        display: true,
+                                                        text: 'BPM',
+                                                        font: {
+                                                                family: 'Raleway',
+                                                                size: 20,
+                                                                style: 'normal',
+                                                                lineHeight: 1.2
+                                                        },
+                                                        padding: { top: 30, left: 0, right: 0, bottom: 0 }
+                                                }
+                                                
+                                        }]
+                                },
+                                animation: {
+                                                duration: 0
+                                        }
+                        },
+                };
+
+                let options2 = {
+                        type: 'line',
+                        data: {
+                                labels: xtimes,
+                                datasets: [{
+                                        label: "time vs bpm",
+                                        data: ybpm,
+                                        fill: false,
+                                        pointRadius: 0,
+                                        pointHoverRadius: 0,
+                                        borderColor: '#ECD662'
+                                }]
+                        },
+                        options: {
+                                scales: {
+                                        x: {
+                                                display: true,
+                                                title: {
+                                                        display: false,
+                                                        text: 'Time',
+                                                        font: {
+                                                                family: 'Raleway',
+                                                                size: 20,
+                                                                weight: 'bold',
+                                                                lineHeight: 1.2,
+                                                        },
+                                                        padding: { top: 20, left: 0, right: 0, bottom: 0 }
+                                                }
+                                        },
+                                        y: {
+                                                display: true,
+                                                suggestedMin: 30,
+                                                title: {
+                                                        display: true,
+                                                        text: 'BPM',
+                                                        font: {
+                                                                family: 'Raleway',
+                                                                size: 20,
+                                                                style: 'normal',
+                                                                lineHeight: 1.2
+                                                        },
+                                                        padding: { top: 30, left: 0, right: 0, bottom: 0 }
+                                                }
+                                        }
+                                },
+                                animation: {
+                                                duration: 0
+                                        } 
+                        },
+                };
+                let chart1 = new Chart(document.getElementById('canvas1'), options1);
+
+                let chart2 = new Chart(document.getElementById('canvas2'), options2);
+        </script>
+
+</div> 
+
+</body>
+<footer>
+        <p class="footer-text">A project by Gurujeet, Adithya, Rahul & Rishikesh.</p>
+</footer>
+</html>
