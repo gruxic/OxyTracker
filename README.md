@@ -9,10 +9,16 @@ This was a complete hardware to software project that used the following tools-
  - Flask [ Python framework ]
 
 ## How does it work?
-
+![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 ## Hardware
 hardware stuff
 ## Sending data to SQL database
 node.js stuff
 ## Accessing SQL data through web application
 flask to SQL
+![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
+## 🔗 Links
+[![instagram](https://img.shields.io/badge/Instagram-fff?style=for-the-badge&logo=instagram&logoColor=black)](https://katherinempeterson.com/)
+[![linkedin](https://img.shields.io/badge/linkedin-fff?style=for-the-badge&logo=linkedin&logoColor=black)](https://www.linkedin.com/in/gzr)
+[![gmail](https://img.shields.io/badge/gmail-fff?style=for-the-badge&logo=gmail&logoColor=black)](mailto:gruxic@gmail.com)
